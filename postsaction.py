@@ -11,14 +11,18 @@ class PostMessage(abstractaction.AbstractAction):
 	
 	@abstractaction.SqliteExecutor
 	def execute(self):
+		
 		return ("INSERT INTO posts(uid,ptext) VALUES(?,?)",(self.user.getId(),self.msg))
 
 class GetFeed(abstractaction.AbstractAction):
-	def __init__(self,user):
+	def __init__(self,user=None):
 		self.user=user
 
-	@user.postformatter
+	@post.postformatter
 	@abstractaction.SqliteExecutor
 	def execute(self):
-		return ("SELECT posts.pid,users.uname,posts.uid,posts.ptext FROM posts,users,follows WHERE follows.follower=? AND users.uid=follows.followee AND posts.uid=follows.followee",(self.user.getId(),))
+		if self.user<>None:
+			return ("SELECT posts.pid,posts.uid,users.uname,posts.ptext FROM posts,users,follows "
+			"WHERE follows.follower=? AND users.uid=follows.followee AND posts.uid=follows.followee",(self.user.getId(),))
+		return ("SELECT posts.pid,users.uname,posts.uid,posts.ptext FROM posts,users " ,)
 

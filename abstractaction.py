@@ -11,7 +11,7 @@ def SqliteExecutor(executef):
 		cmd=executef(*args,**kwargs)
 		c=db.cursor()
 		if len(cmd)==2:
-			#print "running %s,%s" % (cmd[0],str(cmd[1]))
+			print "running %s,%s" % (cmd[0],str(cmd[1]))
 			c.execute(cmd[0],cmd[1])
 		else:
 			c.execute(cmd[0])

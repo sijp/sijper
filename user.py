@@ -1,4 +1,3 @@
-from dbinterface import DBInterface
 
 # Basic User class
 # Contains a User ID (uid) and a list of references to other User objects
