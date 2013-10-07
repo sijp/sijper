@@ -25,7 +25,6 @@ class CreateUserActionTestCase(unittest.TestCase):
 		result=rs[0]
 		assert type(result[0]) is long, "uid is not integer. value: %s, type:%s" % result[0]
 		assert result[1]=='shlomi', "uname is wrong. value: %s" % result[1]
-'''
 class GetUserTestCase(unittest.TestCase):
 	def setUp(self):
 		dbhandler.openDB("sijper_test")
@@ -111,7 +110,6 @@ class GetFollowingTestCase(unittest.TestCase):
 
 
 
-'''
 
 if __name__ == '__main__':
 	    unittest.main()
