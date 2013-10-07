@@ -6,12 +6,14 @@ import sqlite3
 
 class PostMessageTestCase(unittest.TestCase):
 	def setUp(self):
-		dbhandler.openDB(":memory:")
+		dbhandler.openDB("sijper_test")
+		dbhandler.setupDB()
 
 	def tearDown(self):
+		dbhandler.cleanDB()
 		dbhandler.closeDB()
-	
-	def testCreateUser(self):
+
+	def testPostMessage(self):
 		usersaction.CreateUser("u1").execute()
 		u=usersaction.GetUser("u1").execute()
 

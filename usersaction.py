@@ -9,7 +9,7 @@ class CreateUser(abstractaction.AbstractAction):
 	
 	@abstractaction.SqliteExecutor
 	def execute(self):
-		return ("INSERT INTO users(uname) VALUES(?)",(self.uname,))
+		return ("INSERT INTO users(uname) VALUES(%s)",(self.uname,))
 
 class GetUser(abstractaction.AbstractAction):
 	def __init__(self,uname=None):
@@ -20,7 +20,7 @@ class GetUser(abstractaction.AbstractAction):
 	def execute(self):
 		if self.uname==None:
 			return ("SELECT uid,uname FROM users",)
-		return ("SELECT uid,uname FROM users WHERE uname=?",(self.uname,))
+		return ("SELECT uid,uname FROM users WHERE uname=%s",(self.uname,))
 
 
 class Follow(abstractaction.AbstractAction):
@@ -30,7 +30,7 @@ class Follow(abstractaction.AbstractAction):
 	
 	@abstractaction.SqliteExecutor
 	def execute(self):
-		return ("INSERT INTO follows(follower,followee) VALUES(?,?)",(self.follower,self.followee))
+		return ("INSERT INTO follows(follower,followee) VALUES(%s,%s)",(self.follower,self.followee))
 
 class Unfollow(abstractaction.AbstractAction):
 	def __init__(self,follower,followee):
@@ -39,11 +39,10 @@ class Unfollow(abstractaction.AbstractAction):
 
 	@abstractaction.SqliteExecutor
 	def execute(self):
-		return ("DELETE FROM follows WHERE follower=? AND followee=?",(follower,followee))
+		return ("DELETE FROM follows WHERE follower=%s AND followee=%s",(follower,followee))
 	
 class GetFollowing(abstractaction.AbstractAction):
 	def __init__(self,u):
-		print "type(u)=%s" %u
 		if isinstance (u, user.User):
 			self.uid=u.getId()
 		elif isinstance (u, int):
@@ -52,5 +51,5 @@ class GetFollowing(abstractaction.AbstractAction):
 	@user.userformatter
 	@abstractaction.SqliteExecutor
 	def execute(self):
-		return ("SELECT users.uid,users.uname FROM users,follows WHERE follows.follower=? AND follows.followee=users.uid",(self.uid,))
+		return ("SELECT users.uid,users.uname FROM users INNER JOIN follows ON follows.followee=users.uid WHERE follows.follower=%s ",(self.uid,))
 	

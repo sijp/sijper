@@ -1,5 +1,4 @@
 import abstractaction
-import sqlite3
 import user
 import post
 
@@ -12,7 +11,7 @@ class PostMessage(abstractaction.AbstractAction):
 	@abstractaction.SqliteExecutor
 	def execute(self):
 		
-		return ("INSERT INTO posts(uid,ptext) VALUES(?,?)",(self.user.getId(),self.msg))
+		return ("INSERT INTO posts(uid,ptext) VALUES(%s,%s)",(self.user.getId(),self.msg))
 
 class GetFeed(abstractaction.AbstractAction):
 	def __init__(self,user=None):
@@ -23,6 +22,6 @@ class GetFeed(abstractaction.AbstractAction):
 	def execute(self):
 		if self.user<>None:
 			return ("SELECT posts.pid,posts.uid,users.uname,posts.ptext FROM posts,users,follows "
-			"WHERE follows.follower=? AND users.uid=follows.followee AND posts.uid=follows.followee",(self.user.getId(),))
+			"WHERE follows.follower=%s AND users.uid=follows.followee AND posts.uid=follows.followee",(self.user.getId(),))
 		return ("SELECT posts.pid,users.uname,posts.uid,posts.ptext FROM posts,users " ,)
 

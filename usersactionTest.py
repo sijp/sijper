@@ -1,34 +1,38 @@
 import unittest
 import dbhandler
 import usersaction
-import sqlite3 
 
 class CreateUserActionTestCase(unittest.TestCase):
 	def setUp(self):
-		dbhandler.openDB(":memory:")
+		dbhandler.openDB("sijper_test")
+		dbhandler.setupDB()
 
 	def tearDown(self):
+		dbhandler.cleanDB()
 		dbhandler.closeDB()
+
+
 	
 	def testCreateUser(self):
 		
 		c=dbhandler.getDB().cursor()
-		c.execute("SELECT * FROM users WHERE uname='shlomi'")
-		assert c.fetchone()==None, "User is in DB before action"
+		rs=dbhandler.execute(("SELECT * FROM users WHERE uname='shlomi'",))
+		assert len(rs)==0, "User is in DB before action"
 		cua=usersaction.CreateUser('shlomi')
 		cua.execute()
-		c.execute("SELECT * FROM users WHERE uname='shlomi'")
-		rs=c.fetchone()
-		assert rs<>None, "No Results!"
-		assert type(rs[0]) is int, "uid is not integer. value: %s" % rs[0]
-		assert rs[1]=='shlomi', "uname is wrong. value: %s" % rs[1]
-
-
+		rs=dbhandler.execute(("SELECT * FROM users WHERE uname='shlomi'",))
+		assert len(rs)>0, "Creation failed"
+		result=rs[0]
+		assert type(result[0]) is long, "uid is not integer. value: %s, type:%s" % result[0]
+		assert result[1]=='shlomi', "uname is wrong. value: %s" % result[1]
+'''
 class GetUserTestCase(unittest.TestCase):
 	def setUp(self):
-		dbhandler.openDB(":memory:")
+		dbhandler.openDB("sijper_test")
+		dbhandler.setupDB()
 
 	def tearDown(self):
+		dbhandler.cleanDB()
 		dbhandler.closeDB()
 
 	def testGetUser(self):
@@ -48,9 +52,11 @@ class GetUserTestCase(unittest.TestCase):
 		assert u<>None, "users IS empty, but it should'NT be"
 		assert len(u)==2, "result set is not exactly 2, is actually: %d" % len(u)
 
+
 class FollowActionTestCase(unittest.TestCase):
 	def setUp(self):
-		dbhandler.openDB(":memory:")
+		dbhandler.openDB("sijper_test")
+		dbhandler.setupDB()
 		usersaction.CreateUser('u1').execute()
 		usersaction.CreateUser('u2').execute()
 		usersaction.CreateUser('u3').execute()
@@ -61,6 +67,7 @@ class FollowActionTestCase(unittest.TestCase):
 		self.u3=usersaction.GetUser('u3').execute()
 
 	def tearDown(self):
+		dbhandler.cleanDB()
 		dbhandler.closeDB()
 	
 	def testFollow(self):
@@ -68,20 +75,22 @@ class FollowActionTestCase(unittest.TestCase):
 
 		cua=usersaction.Follow(self.u1.getId(),self.u2.getId())
 		cua.execute()
-		c.execute("SELECT follows.followee FROM follows,users WHERE follows.follower=users.uid AND users.uname='u1'")
-		rs=c.fetchone()
-		assert rs<>None, "No Results!"
-		assert rs[0]==self.u2.getId(), "%d is following the wrong guy: %d" % (self.u1.getId(),rs[0])
+		following=usersaction.GetFollowing(self.u1).execute()
+		assert following<>None, "No Results!"
+		assert following.getId()==self.u2.getId(), "%d is following the wrong guy: %d" % (self.u1.getId(),following.getId())
 
 class GetFollowingTestCase(unittest.TestCase):
 	def setUp(self):
-		dbhandler.openDB(":memory:")
+		dbhandler.openDB("sijper_test")
+		dbhandler.setupDB()
+
 		self.u=[]
 		for x in range(1,10):
 			usersaction.CreateUser('u'+str(x)).execute()
 			self.u.append(usersaction.GetUser('u'+str(x)).execute())
 
 	def tearDown(self):
+		dbhandler.cleanDB()
 		dbhandler.closeDB()
 	
 	def testGetFollowing(self):
@@ -102,8 +111,7 @@ class GetFollowingTestCase(unittest.TestCase):
 
 
 
-
-
+'''
 
 if __name__ == '__main__':
 	    unittest.main()
