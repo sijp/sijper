@@ -1,3 +1,4 @@
+import threading
 import socket
 '''
 sock=socket.socket(socket.AF_INET,socket.SOCK_STREAM)
@@ -16,33 +17,71 @@ clientsock.shutdown(1)
 clientsock.close()
 sock.close()
 '''
-class SijperServer:
+class SijperServer(threading.Thread):
 
 	def __init__(self,addr,port):
+		super(SijperServer,self).__init__()
 		self.sock=socket.socket(socket.AF_INET,socket.SOCK_STREAM)
-		sock.bind((addr,port))
-		sock.listen(5)
+		self.sock.bind((addr,port))
+		self.sock.listen(5)
 	
+	'''
+	start of ClientThread
+	'''
+
 	class ClientThread(threading.Thread):
 		def __init__(self,clientsock,address):
+			super(SijperServer.ClientThread,self).__init__()
 			self.clientsock=clientsock
 			self.address=address
 		def run(self):
-			sockfile=clientsock.makefile()
-			while True:
-				msg=sockFile.readline()
-				if len(msg)==0 or msg=="\r\n":
-					break 
-			sockFile.close()
-			self.clientsock.shutdown(1)
-			self.clientsock.close()
+			sockFile=self.clientsock.makefile()
+			try:
+				while True:
+					msg=sockFile.readline()
+					if len(msg)==0 or msg=="\r\n":
+						break
+					self.processMsg(msg)
+				
+				if msg=="\r\n":
+					data=sockFile.read(self.contentlength)
+					parsedict={}
+					for pair in data.split("&"):
+						p=pair.split("=")
+						parsedict[p[0]]=p[1]
+					print parsedict
+					sockFile.write("200 OK")
+					sockFile.flush()
+			finally:
+				sockFile.close()
+				self.clientsock.shutdown(1)
+				self.clientsock.close()
+
+		def processMsg(self,msg):
+			if msg.startswith("Content-Length"):
+				self.contentlength=int(msg[len("Content-Length: "):])
+
+
+	'''
+	end of ClientThread
+	'''
+
 	def stop(self):
 		self.runFlag=False
+		self.sock.shutdown(1)
+		self.sock.close()
 
-	def start(self):
+	def run(self):
 		self.runFlag=True
-		while self.runFlag:
-			(clientsock,address) = self.sock.accept()
-			ct=ClientThread(clientsock,address)
-			ct.start()
+		try:
+			while self.runFlag:
+				(clientsock,address) = self.sock.accept()
+				ct=self.ClientThread(clientsock,address)
+				ct.start()
+		finally:
+			self.sock.shutdown(1)
+			self.sock.close()
 
+
+sijp=SijperServer("127.0.0.1",8081)
+sijp.start()
