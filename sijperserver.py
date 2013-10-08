@@ -1,22 +1,63 @@
 import threading
 import socket
+import config
+import dbhandler
 '''
-sock=socket.socket(socket.AF_INET,socket.SOCK_STREAM)
-sock.bind(("127.0.0.1",8080))
-sock.listen(5)
-print "waiting for a connection..."
-(clientsock,address) = sock.accept()
-print "got something..."
-sockFile=clientsock.makefile()
-msg="nothing"
-while len(msg)>0 and msg<>"\r\n":
-	msg=sockFile.readline()
-	print repr(msg)
-sockFile.close
-clientsock.shutdown(1)
-clientsock.close()
-sock.close()
+start of ClientThread
 '''
+
+class ClientThread(threading.Thread):
+	def __init__(self,clientsock,address,server):
+		super(ClientThread,self).__init__()
+		self.clientsock=clientsock
+		self.address=address
+		self.server=server
+	def run(self):
+		sockFile=self.clientsock.makefile()
+		try:
+			while True:
+				msg=sockFile.readline()
+				if len(msg)==0 or msg=="\r\n":
+					break
+				self.processMsg(msg)
+			
+			if msg=="\r\n":
+				data=sockFile.read(self.contentlength)
+				self.processData(data)
+				sockFile.write("200 OK")
+				sockFile.flush()
+		finally:
+			sockFile.close()
+			self.clientsock.shutdown(1)
+			self.clientsock.close()
+
+	def processMsg(self,msg):
+		if msg.startswith("Content-Length"):
+			self.contentlength=int(msg[len("Content-Length: "):])
+
+	def processData(self,data):
+		paramdict={}
+		action=""
+		for pair in data.split("&"):
+			p=pair.split("=")
+			if p[0]=="action":
+				action=p[1]
+			else:
+				paramdict[p[0]]=p[1]
+		if action<>"quit":
+			actObj=config.actionmodules[action](**paramdict)
+			return actObj.execute()
+		
+		self.server.stop()
+		return None
+
+
+
+'''
+end of ClientThread
+'''
+
+
 class SijperServer(threading.Thread):
 
 	def __init__(self,addr,port):
@@ -25,47 +66,7 @@ class SijperServer(threading.Thread):
 		self.sock.bind((addr,port))
 		self.sock.listen(5)
 	
-	'''
-	start of ClientThread
-	'''
-
-	class ClientThread(threading.Thread):
-		def __init__(self,clientsock,address):
-			super(SijperServer.ClientThread,self).__init__()
-			self.clientsock=clientsock
-			self.address=address
-		def run(self):
-			sockFile=self.clientsock.makefile()
-			try:
-				while True:
-					msg=sockFile.readline()
-					if len(msg)==0 or msg=="\r\n":
-						break
-					self.processMsg(msg)
-				
-				if msg=="\r\n":
-					data=sockFile.read(self.contentlength)
-					parsedict={}
-					for pair in data.split("&"):
-						p=pair.split("=")
-						parsedict[p[0]]=p[1]
-					print parsedict
-					sockFile.write("200 OK")
-					sockFile.flush()
-			finally:
-				sockFile.close()
-				self.clientsock.shutdown(1)
-				self.clientsock.close()
-
-		def processMsg(self,msg):
-			if msg.startswith("Content-Length"):
-				self.contentlength=int(msg[len("Content-Length: "):])
-
-
-	'''
-	end of ClientThread
-	'''
-
+	
 	def stop(self):
 		self.runFlag=False
 		self.sock.shutdown(1)
@@ -76,12 +77,13 @@ class SijperServer(threading.Thread):
 		try:
 			while self.runFlag:
 				(clientsock,address) = self.sock.accept()
-				ct=self.ClientThread(clientsock,address)
+				ct=ClientThread(clientsock,address,self)
 				ct.start()
 		finally:
 			self.sock.shutdown(1)
 			self.sock.close()
 
-
-sijp=SijperServer("127.0.0.1",8081)
+dbhandler.openDB("sijper_test")
+dbhandler.setupDB()
+sijp=SijperServer("127.0.0.1",8080)
 sijp.start()
