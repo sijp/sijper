@@ -7,9 +7,8 @@ class CreateUser(abstractaction.AbstractAction):
 	def __init__(self,uname):
 		self.uname=uname
 	
-	@abstractaction.SqliteExecutor
+	@abstractaction.SqlExecutor
 	def execute(self):
-		print "creating user"
 		return ("INSERT INTO users(uname) VALUES(%s)",(self.uname,))
 	
 
@@ -19,14 +18,26 @@ class GetUser(abstractaction.AbstractAction):
 		self.uname=uname
 
 	@user.userformatter
-	@abstractaction.SqliteExecutor
+	@abstractaction.SqlExecutor
 	def execute(self):
-		print "getting user"
 		if self.uname==None:
 			return ("SELECT uid,uname FROM users",)
 		return ("SELECT uid,uname FROM users WHERE uname=%s",(self.uname,))
 
+
+
 	def getJSON(self):
+		result=self.execute()
+		if type(result) is user.User:
+			return json.dumps({"count":1,
+			   "users":[result.getJSON()]})
+		elif type(result) is list:
+			return json.dumps({"count":len(result),
+					   "users":[json.loads(r.getJSON()) for r in result]})
+		else:
+			return self.emptyJSONResult 
+
+'''	def getJSON(self):
 		result=self.execute()
 		print "getuser:"
 		print result
@@ -43,13 +54,13 @@ class GetUser(abstractaction.AbstractAction):
 			return json.dumps(d)
 		else:
 			return self.emptyJSONResult 
-
+'''
 class Follow(abstractaction.AbstractAction):
 	def __init__(self,follower,followee):
 		self.follower=follower
 		self.followee=followee
 	
-	@abstractaction.SqliteExecutor
+	@abstractaction.SqlExecutor
 	def execute(self):
 		return ("INSERT INTO follows(follower,followee) VALUES(%s,%s)",(self.follower,self.followee))
 	
@@ -60,13 +71,12 @@ class Unfollow(abstractaction.AbstractAction):
 		self.follower=follower
 		self.followee=followee
 
-	@abstractaction.SqliteExecutor
+	@abstractaction.SqlExecutor
 	def execute(self):
 		return ("DELETE FROM follows WHERE follower=%s AND followee=%s",(follower,followee))
 	
 class GetFollowing(GetUser):
 	def __init__(self,follower):
-		print "getfollowing:%s"%type(follower)
 		if type(follower) is user.User:
 			self.uid=follower.getId()
 		elif type(follower) is int:
@@ -75,7 +85,9 @@ class GetFollowing(GetUser):
 			self.uid=int(follower)
 
 	@user.userformatter
-	@abstractaction.SqliteExecutor
+	@abstractaction.SqlExecutor
 	def execute(self):
-		return ("SELECT users.uid,users.uname FROM users INNER JOIN follows ON follows.followee=users.uid WHERE follows.follower=%s ",(self.uid,))
+		return ("SELECT users.uid,users.uname FROM users INNER JOIN follows"
+			" ON follows.followee=users.uid WHERE follows.follower=%s ",(self.uid,))
+		
 	

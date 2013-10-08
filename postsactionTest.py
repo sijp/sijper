@@ -17,7 +17,7 @@ class PostMessageTestCase(unittest.TestCase):
 		usersaction.CreateUser("u1").execute()
 		u=usersaction.GetUser("u1").execute()
 
-		postsaction.PostMessage(u,"Hello World").execute()
+		postsaction.PostMessage(u.getId(),"Hello World").execute()
 		posts=postsaction.GetFeed().execute()
 		assert posts<>None, "post wasn't posted"
 

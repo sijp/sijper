@@ -15,7 +15,6 @@ class CreateUserActionTestCase(unittest.TestCase):
 	
 	def testCreateUser(self):
 		
-		c=dbhandler.getDB().cursor()
 		rs=dbhandler.execute(("SELECT * FROM users WHERE uname='shlomi'",))
 		assert len(rs)==0, "User is in DB before action"
 		cua=usersaction.CreateUser('shlomi')
@@ -70,7 +69,6 @@ class FollowActionTestCase(unittest.TestCase):
 		dbhandler.closeDB()
 	
 	def testFollow(self):
-		c=dbhandler.getDB().cursor()
 
 		cua=usersaction.Follow(self.u1.getId(),self.u2.getId())
 		cua.execute()

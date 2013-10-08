@@ -1,6 +1,7 @@
 import abstractaction
 import user
 import post
+import json
 
 '''
 PostMessage Action - used to post messages to the system
@@ -9,38 +10,35 @@ class PostMessage(abstractaction.AbstractAction):
 	'''
 	recieves a user.User object and a msgtext for the post
 	'''
-	def __init__(self,user,msgtext):
-		self.user=user
+	def __init__(self,userid,msgtext):
+		self.userid=userid
 		self.msg=msgtext
 	
-	@abstractaction.SqliteExecutor
+	@abstractaction.SqlExecutor
 	def execute(self):
-		return ("INSERT INTO posts(uid,ptext) VALUES(%s,%s)",(self.user.getId(),self.msg))
+		return ("INSERT INTO posts(uid,ptext) VALUES(%s,%s)",(self.userid,self.msg))
 
 class GetFeed(abstractaction.AbstractAction):
-	def __init__(self,user=None):
-		self.user=user
+	def __init__(self,userid=None):
+		self.userid=userid
 
 	@post.postformatter
-	@abstractaction.SqliteExecutor
+	@abstractaction.SqlExecutor
 	def execute(self):
-		if self.user<>None:
+		if self.userid<>None:
 			return ("SELECT posts.pid,posts.uid,users.uname,posts.ptext FROM posts,users,follows "
-			"WHERE follows.follower=%s AND users.uid=follows.followee AND posts.uid=follows.followee",(self.user.getId(),))
-		return ("SELECT posts.pid,users.uname,posts.uid,posts.ptext FROM posts,users " ,)
+				"WHERE follows.follower=%s AND users.uid=follows.followee AND posts.uid=follows.followee",(self.userid,))
+		return ("SELECT posts.pid,users.uname,posts.uid,posts.ptext FROM posts INNER JOIN users "
+			"ON users.uid=posts.uid" ,)
 
 	def getJSON(self):
 		result=self.execute()
 		if type(result) is post.Post:
-			d={"count":1}
-			d["posts"]=[result.getJSON()]
-			return json.dumps(d)
+			return json.dumps({"count":1,
+			   "posts":[result.getJSON()]})
 		elif type(result) is list:
-			d={"count":len(result)}
-			d["posts"]=[]
-			for r in result:
-				d["posts"].append(r.getJSON())
-			return json.dumps(d)
+			return json.dumps({"count":len(result),
+					   "posts":[json.loads(r.getJSON()) for r in result]})
 		else:
 			return self.emptyJSONResult 
 

@@ -1,17 +1,18 @@
-'''
-main config file
-'''
+####################
+# main config file #
+####################
 
-'''
-module import section
-'''
+#########################
+# module import section #
+#########################
 import usersaction
 import postsaction
 
 
-'''
-globals
-'''
+###########
+# globals #
+###########
+
 #databse username
 username="sijper"
 
