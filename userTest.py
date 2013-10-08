@@ -1,44 +1,19 @@
 import unittest
 
-from user import User
-
+import user
+import json 
 class UserTestCase(unittest.TestCase):
 	def setUp(self):
-		self.user = User()
+		self.user = user.User((1,"shlomi"))
 	
-	def testFollow(self):
-		user2=User()
-		self.user.follow(user2)
-
-		assert user2 in self.user.following
+	def testUserData(self):
+			assert self.user.getId()==1
+			assert self.user.getName()=="shlomi"
 	
-	def testUnfollow(self):
-		user2=User()
-		self.user.follow(user2)
-		assert user2 in self.user.following
-		self.user.unfollow(user2)
-		assert user2 not in self.user.following
-
-
-	def testUnfollowTwice(self):
-		user2=User()
-		self.user.follow(user2)
-		assert user2 in self.user.following
-		self.user.unfollow(user2)
-		assert user2 not in self.user.following
-		self.user.unfollow(user2)
-		assert user2 not in self.user.following
-
-
-	def testGetFollowingList(self):
-		
-		ulist= [User(),User(),User(),User()]
-
-		for e1 in ulist:
-			self.user.follow(e1)
-
-		for e1 in ulist:
-			assert e1 in self.user.getFollowingList()
+	def testJSONData(self):
+			jsonDict=json.loads(self.user.getJSON())
+			assert jsonDict["uid"]==self.user.getId()
+			assert jsonDict["uname"]==self.user.getName()
 
 if __name__ == '__main__':
 	    unittest.main()
