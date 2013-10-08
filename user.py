@@ -1,9 +1,9 @@
-
+import json
 # Basic User class
 # Contains a User ID (uid) and a list of references to other User objects
 # which correspond to the users this user if following
 
-class User:
+class User(object):
 
 	#constructor - recieves a uid corresponding to this user
 	def __init__(self,(uid,uname)):
@@ -15,6 +15,10 @@ class User:
 	
 	def getName(self):
 		return self.uname
+
+	def getJSON(self):
+		d={"uid":self.uid,"uname":self.uname}
+		return json.dumps(d)
 
 
 def userformatter(func):

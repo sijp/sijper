@@ -10,8 +10,9 @@ password="walla!walla"
 
 actionmodules={ "createuser" : usersaction.CreateUser ,
 		"getuser" : usersaction.GetUser,
-		"follow" : useraction.Follow,
-		"unfollow" : useraction.Unfollow,
+		"follow" : usersaction.Follow,
+		"unfollow" : usersaction.Unfollow,
+		"getfollowing" : usersaction.GetFollowing,
 		"postmessage" : postsaction.PostMessage,
-		"getfeed" : postaction.GetFeed,
-		"getglobalfeed" : postaction.GetFeed }
+		"getfeed" : postsaction.GetFeed,
+		"getglobalfeed" : postsaction.GetFeed }

@@ -2,8 +2,13 @@ import dbhandler
 
 class AbstractAction(object):
 	
+	emptyJSONResult='{"count":0}'
+
 	def execute(self):
 		pass
+	def getJSON(self):
+		self.execute()
+		return self.emptyJSONResult 
 
 def SqliteExecutor(executef):
 	def sqlitewrapper(*args, **kwargs):
