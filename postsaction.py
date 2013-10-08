@@ -31,14 +31,14 @@ class GetFeed(abstractaction.AbstractAction):
 		return ("SELECT posts.pid,users.uname,posts.uid,posts.ptext FROM posts INNER JOIN users "
 			"ON users.uid=posts.uid" ,)
 
-	def getJSON(self):
+	def getDict(self):
 		result=self.execute()
 		if type(result) is post.Post:
-			return json.dumps({"count":1,
-			   "posts":[result.getJSON()]})
+			return {"count":1,
+			   "posts":[result.getJSON()]}
 		elif type(result) is list:
-			return json.dumps({"count":len(result),
-					   "posts":[json.loads(r.getJSON()) for r in result]})
+			return {"count":len(result),
+				"posts":[r.getDict() for r in result]}
 		else:
 			return self.emptyJSONResult 
 

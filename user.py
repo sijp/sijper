@@ -23,9 +23,8 @@ class User(object):
 	
 	
 	#get a JSON string representation of this User
-	def getJSON(self):
-		d={"uid":self.uid,"uname":self.uname}
-		return json.dumps(d)
+	def getDict(self):
+		return {"uid":self.uid,"uname":self.uname}
 
 
 #decorator for methods that returns (uid,uname) tuples

@@ -1,4 +1,5 @@
 import dbhandler
+import json
 
 #Abstractions for supported actions
 #every supported HTTP action should be subclassed from this.
@@ -6,7 +7,7 @@ import dbhandler
 
 class AbstractAction(object):
 	#most basic json string that should be returned to clients' requests
-	emptyJSONResult='{"count":0}'
+	emptyJSONResult={"count":0}
 
 	#execute the action
 	def execute(self):
@@ -14,6 +15,9 @@ class AbstractAction(object):
 	
 	#execute the action and return a json representation of the response
 	def getJSON(self):
+		return json.dumps(self.getDict())
+
+	def getDict(self):
 		self.execute()
 		return self.emptyJSONResult 
 

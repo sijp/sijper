@@ -27,9 +27,8 @@ class Post:
 	
 
 	#get a JSON string representation of this Post
-	def getJSON(self):
-		d={"pid":self.pid,"user":json.loads(self.user.getJSON()),"msg":self.ptext}
-		return json.dumps(d)
+	def getDict(self):
+		return {"pid":self.pid,"user":self.user.getDict(),"msg":self.ptext}
 
 
 

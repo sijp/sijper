@@ -26,14 +26,14 @@ class GetUser(abstractaction.AbstractAction):
 
 
 
-	def getJSON(self):
+	def getDict(self):
 		result=self.execute()
 		if type(result) is user.User:
-			return json.dumps({"count":1,
-			   "users":[result.getJSON()]})
+			return {"count":1,
+			   		"users":[result.getDict()]}
 		elif type(result) is list:
-			return json.dumps({"count":len(result),
-					   "users":[json.loads(r.getJSON()) for r in result]})
+			return {"count":len(result),
+					"users":[r.getDict() for r in result]}
 		else:
 			return self.emptyJSONResult 
 
