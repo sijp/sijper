@@ -3,13 +3,9 @@ import user
 import post
 import json
 
-'''
-PostMessage Action - used to post messages to the system
-'''
+#PostMessage Action - used to post messages to the system
 class PostMessage(abstractaction.AbstractAction):
-	'''
-	recieves a user.User object and a msgtext for the post
-	'''
+	#recieves a user.User object and a msgtext for the post
 	def __init__(self,userid,msgtext):
 		self.userid=userid
 		self.msg=msgtext
@@ -17,6 +13,11 @@ class PostMessage(abstractaction.AbstractAction):
 	@abstractaction.SqlExecutor
 	def execute(self):
 		return ("INSERT INTO posts(uid,ptext) VALUES(%s,%s)",(self.userid,self.msg))
+
+#gets a message feed from the system
+#if userid is given, retrieves only messages this user
+#is following, otherwise retrieves all messages
+#messages retrieves must have PID that is greater (newer) than fromid
 
 class GetFeed(abstractaction.AbstractAction):
 	def __init__(self,userid=None,fromid=-1):
@@ -32,7 +33,8 @@ class GetFeed(abstractaction.AbstractAction):
 		return ("SELECT posts.pid,posts.uid,users.uname,posts.ptext FROM posts INNER JOIN users "
 			"ON users.uid=posts.uid WHERE posts.pid>%s" ,(self.fromid,))
 	
-	
+	#returns a dict representation of the query result
+		
 	def getDict(self):
 		result=self.execute()
 		print type(result)

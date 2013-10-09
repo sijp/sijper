@@ -2,6 +2,7 @@ import abstractaction
 import json
 import user
 
+#create a new user in the system whose name will be uname (id auto generated)
 class CreateUser(abstractaction.AbstractAction):
 
 	def __init__(self,uname):
@@ -12,7 +13,8 @@ class CreateUser(abstractaction.AbstractAction):
 		return ("INSERT INTO users(uname) VALUES(%s)",(self.uname,))
 	
 
-	
+#get a user.User object from the system whose name is uname 
+#if uname is not given, than retrieves a list of all users
 class GetUser(abstractaction.AbstractAction):
 	def __init__(self,uname=None):
 		self.uname=uname
@@ -24,7 +26,7 @@ class GetUser(abstractaction.AbstractAction):
 			return ("SELECT uid,uname FROM users",)
 		return ("SELECT uid,uname FROM users WHERE uname=%s",(self.uname,))
 
-
+	#return a dict representation of the query result
 
 	def getDict(self):
 		result=self.execute()
@@ -37,24 +39,7 @@ class GetUser(abstractaction.AbstractAction):
 		else:
 			return self.emptyJSONResult 
 
-'''	def getJSON(self):
-		result=self.execute()
-		print "getuser:"
-		print result
-		print type(result) is user.User
-		if type(result) is user.User:
-			d={"count":1}
-			d["users"]=[result.getJSON()]
-			return json.dumps(d)
-		elif type(result) is list:
-			d={"count":len(result)}
-			d["users"]=[]
-			for r in result:
-				d["users"].append(r.getJSON())
-			return json.dumps(d)
-		else:
-			return self.emptyJSONResult 
-'''
+# Sets user whose uid is follower follow user whose uid is followee
 class Follow(abstractaction.AbstractAction):
 	def __init__(self,follower,followee):
 		self.follower=follower
@@ -65,7 +50,7 @@ class Follow(abstractaction.AbstractAction):
 		return ("INSERT INTO follows(follower,followee) VALUES(%s,%s)",(self.follower,self.followee))
 	
 
-
+#Sets user whose uid is follower unfollow user whose uid is followee
 class Unfollow(abstractaction.AbstractAction):
 	def __init__(self,follower,followee):
 		self.follower=follower
@@ -74,7 +59,9 @@ class Unfollow(abstractaction.AbstractAction):
 	@abstractaction.SqlExecutor
 	def execute(self):
 		return ("DELETE FROM follows WHERE follower=%s AND followee=%s",(self.follower,self.followee))
-	
+
+#returns a list of users (or a single user) that are being followed by 
+#the user whose uid is follower
 class GetFollowing(GetUser):
 	def __init__(self,follower):
 		if type(follower) is user.User:
