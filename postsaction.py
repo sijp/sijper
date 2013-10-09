@@ -28,14 +28,15 @@ class GetFeed(abstractaction.AbstractAction):
 		if self.userid<>None:
 			return ("SELECT posts.pid,posts.uid,users.uname,posts.ptext FROM posts,users,follows "
 				"WHERE follows.follower=%s AND users.uid=follows.followee AND posts.uid=follows.followee",(self.userid,))
-		return ("SELECT posts.pid,users.uname,posts.uid,posts.ptext FROM posts INNER JOIN users "
+		return ("SELECT posts.pid,posts.uid,users.uname,posts.ptext FROM posts INNER JOIN users "
 			"ON users.uid=posts.uid" ,)
 
 	def getDict(self):
 		result=self.execute()
+		print type(result)
 		if type(result) is post.Post:
 			return {"count":1,
-			   "posts":[result.getJSON()]}
+			   "posts":[result.getDict()]}
 		elif type(result) is list:
 			return {"count":len(result),
 				"posts":[r.getDict() for r in result]}

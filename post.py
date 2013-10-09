@@ -2,7 +2,7 @@ import user
 import json
 
 #Basic Post object
-class Post:
+class Post(object):
 
 	#constructor - recieves a uid corresponding to this user
 	def __init__(self,(postid,uid,uname,ptext)):

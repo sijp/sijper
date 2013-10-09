@@ -31,6 +31,27 @@ class HTTPTestCase(unittest.TestCase):
 		return urllib2.urlopen(req)
 
 
+class ServerStartStopTestCase(HTTPTestCase):
+	
+	def setUp(self):
+		pass
+
+	def tearDown(self):
+		pass
+	
+	def testStartStopOnce(self):
+		try:
+			self.startServer()
+			self.stopServer()
+		except:
+			assert False,"start-stop failed"
+	
+	def testStartStopMany(self):
+		for i in xrange(10):
+			self.testStartStopOnce()
+		
+
+
 class UserActionTestCase(HTTPTestCase):
 				
 	def testCreateUser(self):

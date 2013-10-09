@@ -1,0 +1,76 @@
+<!doctype html>
+
+<html>
+<head>
+<title> Hello Sijper </title>
+<script src="http://ajax.googleapis.com/ajax/libs/jquery/1.9.1/jquery.min.js"></script>
+<script type="text/javascript" src="sijper.js">
+</script>
+
+</head>
+
+<body>
+	<div>
+		<form onsubmit="return sijperPost(this)">
+		Register:
+		<input type="hidden" name="action" value="createuser" />
+		<label for="uname">User Name:</label>
+		<input type="text" id="uname" name="uname"/>
+		<input type="submit" />
+		</form>
+
+		<form onsubmit="return sijperPost(this)">
+		Follow:
+		<input type="hidden" name="action" value="follow" />
+		<label for="follower">Your ID:</label>
+		<input type="text" name="follower" id="follower"/>
+		<label for="followee">His ID:</label>
+		<input type="text" name="followee" id="followee"/>
+		<input type="submit" />
+		</form>
+		
+		<form onsubmit="return sijperPost(this)">
+		Unfollow:
+		<input type="hidden" name="action" value="unfollow" />
+		<label for="ufollower">Your ID:</label>
+		<input type="text" name="follower" id="ufollower"/>
+		<label for="ufollowee">His ID:</label>
+		<input type="text" name="followee" id="ufollowee"/>
+		<input type="submit" />
+		</form>
+
+		<form onsubmit="return sijperPost(this)">
+		Post:
+		<input type="hidden" name="action" value="postmessage" />
+		<label for="userid">Your ID:</label>
+		<input type="text" name="userid" id="userid"/><br/>
+		<textarea name="msgtext"> </textarea>
+		<input type="submit" />
+		</form>
+
+		<form onsubmit="return sijperPost(this)">
+		GetFeed:
+		<input type="hidden" name="action" value="getfeed" />
+		<label for="guserid">Your ID:</label>
+		<input type="text" name="userid" id="guserid"/>
+		<input type="submit" />
+		</form>
+
+		<form onsubmit="return sijperPost(this)" action="http://127.0.0.1:8080" method="post">
+		GetGlobalFeed:
+		<input type="hidden" name="action" value="getglobalfeed" />
+		<input type="submit" />
+		</form>
+		
+		<form onsubmit="return sijperPost(this)">
+		quitserver:
+		<input type="hidden" name=action value="quit" />
+		<input type="submit" />
+		</form>
+
+	</div>
+	
+	<div id="resultbox">
+	</div>	
+</body>
+</html>

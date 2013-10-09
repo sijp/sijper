@@ -37,9 +37,7 @@ class ClientThread(threading.Thread):
 				jsonResponse=self.processData(data)
 				if jsonResponse<>None:
 					#write header
-					sockFile.write("HTTP/1.1 200 OK\r\n")
-					sockFile.write("Content-Length:%d" % len(jsonResponse) )
-					sockFile.write("\r\n\r\n")
+					self.sendHeaders(sockFile,len(jsonResponse))
 					#finish header
 					sockFile.write(jsonResponse)
 					sockFile.flush()
@@ -49,7 +47,15 @@ class ClientThread(threading.Thread):
 			self.clientsock.shutdown(1)
 			self.clientsock.close()
 
-
+	#send http headers to client
+	def sendHeaders(self,sockFile,contentlength):
+		sockFile.write("HTTP/1.1 200 OK\r\n")
+		sockFile.write("Content-Type: application/json;charset=UTF-8\r\n")
+		sockFile.write("Content-Length: %d\r\n" % contentlength)
+		sockFile.write("Content-Encoding: utf-8 \r\n")
+		sockFile.write("Connection: keep-alive\r\n")
+		sockFile.write("\r\n")
+		
 	#process header line.
 	#for now just waits until Content-Length is recieved 
 
