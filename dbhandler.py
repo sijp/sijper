@@ -14,8 +14,8 @@ def openDB(dbname):
 	db=MySQLdb.connect(host="localhost",
 			   user=config.username,
 			   passwd=config.password,
-			   db=dbname,
-			   cursorclass = MySQLdb.cursors.SSCursor)
+			   db=dbname)
+			  # cursorclass = MySQLdb.cursors.SSCursor)
 
 #execute the sql query 'cmd'
 #returns the query result (list of tuples)
@@ -25,9 +25,11 @@ def execute(cmd):
 		c=db.cursor()
 		c.execute(*cmd)
 		rs=c.fetchall()
+		c.close()
 		db.commit()
 		return rs
 	except:
+		print "error"
 		return tuple()
 
 

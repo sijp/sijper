@@ -35,6 +35,7 @@ class GetFeed(abstractaction.AbstractAction):
 	
 	def getDict(self):
 		result=self.execute()
+		print type(result)
 		if type(result) is post.Post:
 			return {"count":1,
 			   "posts":[result.getDict()]}

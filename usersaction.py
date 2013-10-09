@@ -73,7 +73,7 @@ class Unfollow(abstractaction.AbstractAction):
 
 	@abstractaction.SqlExecutor
 	def execute(self):
-		return ("DELETE FROM follows WHERE follower=%s AND followee=%s",(follower,followee))
+		return ("DELETE FROM follows WHERE follower=%s AND followee=%s",(self.follower,self.followee))
 	
 class GetFollowing(GetUser):
 	def __init__(self,follower):
