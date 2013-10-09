@@ -11,7 +11,7 @@
 
 <body>
 	<div>
-		<form onsubmit="return sijperPost(this)">
+		<form onsubmit="return sijperPost(this,false)">
 		Register:
 		<input type="hidden" name="action" value="createuser" />
 		<label for="uname">User Name:</label>
@@ -19,7 +19,7 @@
 		<input type="submit" />
 		</form>
 
-		<form onsubmit="return sijperPost(this)">
+		<form onsubmit="return sijperPost(this,false)">
 		Follow:
 		<input type="hidden" name="action" value="follow" />
 		<label for="follower">Your ID:</label>
@@ -29,7 +29,7 @@
 		<input type="submit" />
 		</form>
 		
-		<form onsubmit="return sijperPost(this)">
+		<form onsubmit="return sijperPost(this,false)">
 		Unfollow:
 		<input type="hidden" name="action" value="unfollow" />
 		<label for="ufollower">Your ID:</label>
@@ -39,7 +39,7 @@
 		<input type="submit" />
 		</form>
 
-		<form onsubmit="return sijperPost(this)">
+		<form onsubmit="return sijperPost(this,false)">
 		Post:
 		<input type="hidden" name="action" value="postmessage" />
 		<label for="userid">Your ID:</label>
@@ -48,7 +48,7 @@
 		<input type="submit" />
 		</form>
 
-		<form onsubmit="return sijperPost(this)">
+		<form onsubmit="return sijperPost(this,true)">
 		GetFeed:
 		<input type="hidden" name="action" value="getfeed" />
 		<label for="guserid">Your ID:</label>
@@ -56,13 +56,13 @@
 		<input type="submit" />
 		</form>
 
-		<form onsubmit="return sijperPost(this)" action="http://127.0.0.1:8080" method="post">
+		<form onsubmit="return sijperPost(this,true)" action="http://127.0.0.1:8080" method="post">
 		GetGlobalFeed:
 		<input type="hidden" name="action" value="getglobalfeed" />
 		<input type="submit" />
 		</form>
 		
-		<form onsubmit="return sijperPost(this)">
+		<form onsubmit="return sijperPost(this,false)">
 		quitserver:
 		<input type="hidden" name=action value="quit" />
 		<input type="submit" />

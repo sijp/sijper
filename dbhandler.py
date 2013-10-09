@@ -2,7 +2,7 @@ import MySQLdb
 import MySQLdb.cursors
 import os
 import config
-
+import sys
 
 #db - global MySQL connector
 db=None
@@ -28,7 +28,7 @@ def execute(cmd):
 		db.commit()
 		return rs
 	except:
-		return None
+		return tuple()
 
 
 #close the db connection
