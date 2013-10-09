@@ -8,7 +8,8 @@ As part of a job interview
 
 System Structure:
 -----------------
-The system relys on the existance of Python 2.7.4 and a MySQL Server.
+The system relies on the existence of Python 2.7.4 and a MySQL Server. For a nice drawing please
+see the structure.svg or structure.pdf files.
 
 ##dbhandler.py
 This module supplies basic functions to work with the MySQL Server.
@@ -19,7 +20,7 @@ It also supplies the cleanDB and setupDB functions, to reset the Database.
 This is a class which, every other action (createuser,follow...) must subclass
 in order to bring the system the proper functionality in order to process the action.
 A basic action should implement the execute and getDict method.
-The constructor signiature must match exactly the signiature that is required by the http post request (same parameters names).
+The constructor signature must match exactly the signature that is required by the http post request (same parameters names).
 
 ###execute:
 executes an SQL Query that represents the action. Usually one should implement it
