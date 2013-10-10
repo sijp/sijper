@@ -29,9 +29,9 @@ class GetFeed(abstractaction.AbstractAction):
 	def execute(self):
 		if self.userid<>None:
 			return ("SELECT posts.pid,posts.uid,users.uname,posts.ptext FROM posts,users,follows "
-				"WHERE follows.follower=%s AND users.uid=follows.followee AND posts.uid=follows.followee AND posts.pid>%s",(self.userid,self.fromid))
+				"WHERE follows.follower=%s AND users.uid=follows.followee AND posts.uid=follows.followee AND posts.pid>%s ORDER BY posts.pid",(self.userid,self.fromid))
 		return ("SELECT posts.pid,posts.uid,users.uname,posts.ptext FROM posts INNER JOIN users "
-			"ON users.uid=posts.uid WHERE posts.pid>%s" ,(self.fromid,))
+			"ON users.uid=posts.uid WHERE posts.pid>%s ORDER BY posts.pid" ,(self.fromid,))
 	
 	#returns a dict representation of the query result
 		
