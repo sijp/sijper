@@ -4,6 +4,11 @@ import os
 import config
 import sys
 
+#disable mysql warnings
+from warnings import filterwarnings
+filterwarnings('ignore',category=MySQLdb.Warning)
+
+
 #db - global MySQL connector
 db=None
 

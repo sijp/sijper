@@ -41,7 +41,7 @@ function SijperLiveRequest(obj){
 			function(){
 				self.sendLive();
 			}
-			,500);
+			,5000);
 	}
 
 	this.getParams=function(){

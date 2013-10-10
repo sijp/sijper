@@ -26,8 +26,10 @@ class SijperServer(threading.Thread):
 
 	def stop(self):
 		self.runFlag=False
-		socket.socket(socket.AF_INET,socket.SOCK_STREAM).connect((self.address,self.port))
-	
+		try:
+			socket.socket(socket.AF_INET,socket.SOCK_STREAM).connect((self.address,self.port))
+		except:
+			pass
 	
 	#server thread accept loop
 	def run(self):
