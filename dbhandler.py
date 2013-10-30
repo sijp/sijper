@@ -33,8 +33,8 @@ def execute(cmd):
 		c.close()
 		db.commit()
 		return rs
-	except:
-		print "error"
+	except Exception as e:
+		print e
 		return tuple()
 
 
