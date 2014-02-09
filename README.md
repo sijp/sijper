@@ -1,10 +1,7 @@
 sijper
 ======
 
-basic microblogging project
-
-As part of a job interview
-
+basic microblogging project - a fully ReSTful web server, that supports basic microblogging actions.
 
 System Structure:
 -----------------
